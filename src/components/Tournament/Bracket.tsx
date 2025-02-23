@@ -1,11 +1,13 @@
 import React from "react";
 import { Participant, BracketStyles } from "./Interfaces";
+import LinkComponent, { LinkProps as Link } from "./Link";
 
 export interface BracketProps {
   id: number;
   className?: string;
   position: number[];
   style: "empty" | "notUsed" | "used" | "advanced" | "loser" | "winner";
+  link?: Link;
   side?: "left" | "right";
   participant?: Participant;
   children?: React.ReactNode;
@@ -17,6 +19,7 @@ const Bracket: React.FC<BracketProps> = ({
   className,
   position,
   style,
+  link,
   children,
   bracketStyles = {},
 }) => {
@@ -39,9 +42,11 @@ const Bracket: React.FC<BracketProps> = ({
           position[1] + 1
         }`,
       }}
-      className={`${className} ${combinedBracketStyles[style]}`}
+      className={`${className} ${combinedBracketStyles[style]} relative`}
     >
       {children}
+
+      {link && <LinkComponent {...link} />}
     </div>
   );
 };

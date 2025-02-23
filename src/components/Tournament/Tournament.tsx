@@ -2,7 +2,13 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import BracketComponent, { BracketProps as Bracket } from "./Bracket";
 import { Participant, Match, BracketStyles } from "./Interfaces";
-import { generateBrackets, organizeParticipants, organizeMatches, getMatchesOrder } from "./TournamentController";
+import {
+  generateBrackets,
+  organizeParticipants,
+  organizeMatches,
+  getMatchesOrder,
+  generateLinks,
+} from "./TournamentController";
 import { useParticipants } from "./hooks/useParticipants";
 import { useMatches } from "./hooks/useMatches";
 
@@ -12,6 +18,7 @@ interface TournamentProps {
   rowGap?: number;
   bracketClassName?: string;
   bracketStyles?: BracketStyles;
+  linkColor?: string;
   participants: Participant[];
   matches: Match[];
   onTournamentComplete?: (winner: Participant | null) => void;
@@ -24,17 +31,21 @@ const Tournament: React.FC<TournamentProps> = ({
   rowGap,
   bracketClassName,
   bracketStyles: param_bracketStyles,
+  linkColor,
   participants: param_participants,
   matches: param_matches,
   onTournamentComplete,
-  onMatchesOrder
+  onMatchesOrder,
 }) => {
   const [brackets, setBrackets] = useState<Bracket[]>([]);
   const tournamentRef = useRef<HTMLDivElement>(null);
-  const participants = useParticipants(param_participants); 
+  const participants = useParticipants(param_participants);
   const matches = useMatches(param_matches);
   const [bracketStyles] = useState<BracketStyles>(param_bracketStyles || {});
-  const memoizedOnTournamentComplete = useCallback(onTournamentComplete || (() => {}), []);
+  const memoizedOnTournamentComplete = useCallback(
+    onTournamentComplete || (() => {}),
+    []
+  );
   const memoizedOnMatchesOrder = useCallback(onMatchesOrder || (() => {}), []);
 
   useEffect(() => {
@@ -51,12 +62,26 @@ const Tournament: React.FC<TournamentProps> = ({
       container.style.rowGap = `${rowGap || 0}px`;
     }
 
-    const newBrackets: Bracket[] = generateBrackets(participants, bracketClassName, bracketStyles);
+    const newBrackets: Bracket[] = generateBrackets(
+      participants,
+      bracketClassName,
+      bracketStyles
+    );
+    generateLinks(newBrackets, numParticipants, rowGap || 0, columnGap || 0, linkColor);
     organizeParticipants(newBrackets, participants);
     organizeMatches(newBrackets, matches, memoizedOnTournamentComplete);
     getMatchesOrder(newBrackets, matches, memoizedOnMatchesOrder);
     setBrackets(newBrackets);
-  }, [participants, matches, bracketStyles, columnGap, rowGap, bracketClassName, memoizedOnTournamentComplete, memoizedOnMatchesOrder]);
+  }, [
+    participants,
+    matches,
+    bracketStyles,
+    columnGap,
+    rowGap,
+    bracketClassName,
+    memoizedOnTournamentComplete,
+    memoizedOnMatchesOrder,
+  ]);
 
   return (
     <div className={className}>

@@ -9,121 +9,68 @@ import { useState } from "react";
 function App() {
   const [winner, setWinner] = useState<Participant | null>(null);
   const [matchesOrder, setMatchesOrder] = useState<Match[]>([]);
+  const [linkColor, setLinkColor] = useState<string | undefined>(undefined);
+
+  const bracketContent = (id: number, name: string) => (
+    <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full font-semibold overflow-hidden">
+      <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
+        {id}
+      </p>
+      <p className="px-2 w-full text-center">{name}</p>
+    </div>
+  );
+
   const [participants, setParticipants] = useState<Participant[]>([
     {
       id: 1,
-      name: "1",
-      content: (
-        <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full rounded-md font-semibold overflow-hidden">
-          <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
-            1
-          </p>
-          <p className="px-2 w-full text-center">Joseph</p>
-        </div>
-      ),
+      name: "Joseph",
+      content: bracketContent(1, "Joseph"),
     },
     {
       id: 2,
-      name: "2",
-      content: (
-        <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full rounded-md font-semibold overflow-hidden">
-          <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
-            2
-          </p>
-          <p className="px-2 w-full text-center">Juan</p>
-        </div>
-      ),
+      name: "James",
+      content: bracketContent(2, "James"),
     },
     {
       id: 3,
-      name: "3",
-      content: (
-        <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full rounded-md font-semibold overflow-hidden">
-          <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
-            3
-          </p>
-          <p className="px-2 w-full text-center">Pedro</p>
-        </div>
-      ),
+      name: "Emma",
+      content: bracketContent(3, "Emma"),
     },
     {
       id: 4,
-      name: "4",
-      content: (
-        <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full rounded-md font-semibold overflow-hidden">
-          <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
-            4
-          </p>
-          <p className="px-2 w-full text-center">Carlos</p>
-        </div>
-      ),
+      name: "Oliver",
+      content: bracketContent(4, "Oliver"),
     },
     {
       id: 5,
-      name: "5",
-      content: (
-        <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full rounded-md font-semibold overflow-hidden">
-          <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
-            5
-          </p>
-          <p className="px-2 w-full text-center">Javier</p>
-        </div>
-      ),
+      name: "Sophia",
+      content: bracketContent(5, "Sophia"),
     },
     {
       id: 6,
-      name: "6",
-      content: (
-        <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full rounded-md font-semibold overflow-hidden">
-          <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
-            6
-          </p>
-          <p className="px-2 w-full text-center">Luis</p>
-        </div>
-      ),
+      name: "William",
+      content: bracketContent(6, "William"),
     },
     {
       id: 7,
-      name: "7",
-      content: (
-        <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full rounded-md font-semibold overflow-hidden">
-          <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
-            7
-          </p>
-          <p className="px-2 w-full text-center">Mario</p>
-        </div>
-      ),
+      name: "Isabella",
+      content: bracketContent(7, "Isabella"),
     },
     {
       id: 8,
-      name: "8",
-      content: (
-        <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full rounded-md font-semibold overflow-hidden">
-          <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
-            8
-          </p>
-          <p className="px-2 w-full text-center">Miguel</p>
-        </div>
-      ),
+      name: "Benjamin",
+      content: bracketContent(8, "Benjamin"),
     },
     {
       id: 9,
-      name: "9",
-      content: (
-        <div className="flex border-2 border-gray-700 justify-between items-center w-full h-full rounded-md font-semibold overflow-hidden">
-          <p className="flex items-center h-full px-2 bg-slate-400 border-r-[2px] border-gray-700">
-            9
-          </p>
-          <p className="px-2 w-full text-center">Andres</p>
-        </div>
-      ),
+      name: "Charlotte",
+      content: bracketContent(9, "Charlotte"),
     },
   ]);
 
   const [matches, setMatches] = useState<Match[]>([
-    { id: 100, idParticpants: [9, 8], idWinner: 9 },
-    { id: 800, idParticpants: [7, 6], idWinner: 7 },
-    { id: 900, idParticpants: [3, 11], idWinner: 3 },
+    { id: 100, idParticipants: [9, 8], idWinner: 9 },
+    { id: 800, idParticipants: [7, 6], idWinner: 7 },
   ]);
 
   const [bracketStyles] = useState<BracketStyles>({
@@ -146,15 +93,18 @@ function App() {
   return (
     <>
       <Tournament
-        className="bg-gray-600 overflow-auto p-5"
+        className="bg-gray-600 overflow-auto p-5 w-1/2 mx-auto"
+        rowGap={10}
         columnGap={10}
-        bracketClassName="flex justify-center items-center rounded-md w-full mx-auto"
+        bracketClassName="flex justify-center items-center rounded-xl w-full min-w-[200px] mx-auto text-xl"
         bracketStyles={bracketStyles}
+        linkColor={linkColor}
         participants={participants}
         matches={matches}
         onTournamentComplete={handleTournamentComplete}
         onMatchesOrder={handleMatchesOrder}
       />
+
       <div className="mt-5 p-5 bg-cyan-300">
         <h1> Tournament Features</h1>
         <p className="bg-yellow-200">
@@ -163,7 +113,7 @@ function App() {
         <p className="bg-cyan-400">
           Next matches Order:{" "}
           {matchesOrder
-            .map((match) => `${match.idParticpants.join(" vs ")}`)
+            .map((match) => `${match.idParticipants.join(" vs ")}`)
             .join(", ")}
         </p>
         <button
@@ -171,9 +121,10 @@ function App() {
           onClick={async () => {
             const newMatch = {
               ...matchesOrder[0],
-              idWinner: matchesOrder[0].idParticpants[0],
+              idWinner: matchesOrder[0].idParticipants[0],
             };
             setMatches((prevMatches) => [...prevMatches, newMatch]);
+            setLinkColor("rgba(0, 255, 255, 1");
           }}
         >
           Next match
@@ -183,9 +134,10 @@ function App() {
           onClick={() => {
             const newMatch = {
               ...matchesOrder[0],
-              idWinner: matchesOrder[0].idParticpants[1],
+              idWinner: matchesOrder[0].idParticipants[1],
             };
             setMatches((prevMatches) => [...prevMatches, newMatch]);
+            setLinkColor("rgba(255, 0, 255, 1");
           }}
         >
           Next match
@@ -209,6 +161,7 @@ function App() {
               ...prevParticipants,
               newParticipant,
             ]);
+            setLinkColor("rgba(255, 255, 0, 1");
           }}
         >
           Add a new participant

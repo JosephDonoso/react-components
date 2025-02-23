@@ -15,7 +15,6 @@ export const useBracketStyles = (param_bracketStyles: BracketStyles) => {
     ) {
       setBracketStyles(param_bracketStyles);
     }
-    
   }, [param_bracketStyles, bracketStyles]);
 
   return bracketStyles;

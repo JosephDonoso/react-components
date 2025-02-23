@@ -8,7 +8,7 @@ export interface Participant {
 
 export interface Match {
   id: number;
-  idParticpants: number[];
+  idParticipants: number[];
   idWinner: number;
 }
 
@@ -20,4 +20,3 @@ export interface BracketStyles {
   notUsed?: string;
   empty?: string;
 }
-

@@ -12,7 +12,7 @@ export const useParticipants = (param_participants: Participant[]) => {
     for (let i = 0; i < participants.length; i++) {
       if (
         param_participants[i].id !== participants[i].id ||
-        param_participants[i].name !== participants[i].name 
+        param_participants[i].name !== participants[i].name
       ) {
         setParticipants(param_participants);
         break;

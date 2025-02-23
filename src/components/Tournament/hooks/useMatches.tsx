@@ -12,8 +12,8 @@ export const useMatches = (param_matches: Match[]) => {
     for (let i = 0; i < matches.length; i++) {
       if (
         param_matches[i].id !== matches[i].id ||
-        param_matches[i].idParticpants[0] !== matches[i].idParticpants[0] ||
-        param_matches[i].idParticpants[1] !== matches[i].idParticpants[1] ||
+        param_matches[i].idParticipants[0] !== matches[i].idParticipants[0] ||
+        param_matches[i].idParticipants[1] !== matches[i].idParticipants[1] ||
         param_matches[i].idWinner !== matches[i].idWinner
       ) {
         setMatches(param_matches);

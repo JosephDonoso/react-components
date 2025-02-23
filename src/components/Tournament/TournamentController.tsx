@@ -48,7 +48,7 @@ export const generateBrackets = (
       currentBracket = newBrackets[index] as Bracket;
       if (currentBracket) {
         const offsetY = getOffsetY(index, tournamentSize);
-
+        console.log("offsetY", offsetY);
         newBrackets.push({
           id: 2 * currentBracket.id + 1,
           className: bracketClassName,
@@ -78,6 +78,33 @@ export const generateBrackets = (
     index += 1;
   }
   return newBrackets;
+};
+
+export const generateLinks = (
+  newBrackets: Bracket[],
+  numParticipants: number,
+  rowGap: number,
+  columnGap: number,
+  linkColor: string | undefined
+) => {
+  const tournamentSize = Math.trunc(Math.log2(numParticipants - 1)) + 1;
+  for (let i = newBrackets.length - 1; i > 0; i -= 1) {
+    const currentBracket = newBrackets[i];
+    if (currentBracket.style !== "empty") {
+      const parentBracket = newBrackets[Math.trunc((i - 1) / 2)];
+      const offsetY = getOffsetY(parentBracket.id, tournamentSize);
+
+      currentBracket.link = {
+        positionVertical: currentBracket.id % 2 === 0 ? "top" : "bottom",
+        positionHorizontal: currentBracket.side === "left" ? "left" : "right",
+        rows: offsetY,
+        cols: 1,
+        rowGap: rowGap,
+        columnGap: columnGap,
+        linkColor: linkColor,
+      };
+    }
+  }
 };
 
 export const organizeParticipants = (
@@ -126,9 +153,7 @@ const advanceBracket = (
   bracket2: Bracket,
   onTournamentComplete: (winner: Participant) => void
 ) => {
-  const parentBracket = newBrackets.find(
-    (bracket) => bracket.id === Math.trunc((bracket1.id - 1) / 2)
-  );
+  const parentBracket = newBrackets[Math.trunc((bracket1.id - 1) / 2)];
   if (parentBracket) {
     bracket1.style = "advanced";
     bracket2.style = "loser";
@@ -177,20 +202,20 @@ export const organizeMatches = (
         (bracket) =>
           bracket.participant &&
           bracket.style === "used" &&
-          bracket.participant.id === match.idParticpants[0]
+          bracket.participant.id === match.idParticipants[0]
       );
       const bracketParticipant2 = newBrackets.find(
         (bracket) =>
           bracket.participant &&
           bracket.style === "used" &&
-          bracket.participant.id === match.idParticpants[1]
+          bracket.participant.id === match.idParticipants[1]
       );
 
       if (
         bracketParticipant1 &&
         bracketParticipant2 &&
         isAdjacentBracket(bracketParticipant1, bracketParticipant2) &&
-        Math.max(bracketParticipant1.id, bracketParticipant2.id)%2 === 0
+        Math.max(bracketParticipant1.id, bracketParticipant2.id) % 2 === 0
       ) {
         matchesVisited[match.id] = true;
         if (match.idWinner === bracketParticipant1.participant?.id) {
@@ -234,7 +259,7 @@ export const getMatchesOrder = (
     ) {
       matchesOrder.push({
         id: matchId,
-        idParticpants: [
+        idParticipants: [
           newBrackets[i].participant?.id || -1,
           newBrackets[i - 1].participant?.id || -1,
         ],
